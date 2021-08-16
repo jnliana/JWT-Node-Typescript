@@ -1,8 +1,11 @@
 import express from "express";
 import morgan from "morgan"; // See http request in console
 import cors from "cors";
+import passport from "passport";
+import passportMiddleware from "./middlewares/passport";
 
 import authRoutes from "./routes/auth.routes";
+import privateRoutes from "./routes/private.routes";
 
 // Initializations
 const app = express();
@@ -15,6 +18,8 @@ app.set("port", process.env.PORT || 5000);
 // Initialize morgan in Dev
 app.use(morgan("dev"));
 app.use(cors());
+app.use(passport.initialize());
+passport.use(passportMiddleware);
 
 // Understand data in json format
 app.use(express.urlencoded({ extended: false }));
@@ -27,5 +32,6 @@ app.get("/", (req, res, next) => {
 });
 
 app.use("/api/user", authRoutes);
+app.use("/api/products", privateRoutes);
 
 export default app;
